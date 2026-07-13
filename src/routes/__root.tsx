@@ -81,16 +81,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Սիրով հրավիրում եմ իմ 35-ամյակին · 29 հուլիսի 2026, Աֆրիկյանս Ռեստորան, Ջրվեժ։ You're warmly invited to Samvel's 35th birthday.",
+          "Հոբելյարի կողմից\nՀոբելյարի կնոջ կողմից",
       },
       { name: "author", content: "Samvel" },
       { property: "og:title", content: "Սամվելի 35-ամյակը · 29.07.2026" },
       {
         property: "og:description",
-        content: "Join us on July 29, 2026 at Afrikyans Restaurant, Jrvezh.",
+        content: "Հոբելյարի կողմից\nՀոբելյարի կնոջ կողմից",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Սամվելի 35-ամյակը · 29.07.2026" },
+      { name: "twitter:description", content: "Հոբելյարի կողմից\nՀոբելյարի կնոջ կողմից" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/83300d67-5ac2-41ab-814a-f910ebc10e60/id-preview-d7a4b127--bdc4a465-53e6-4787-9c40-5b1fb6f1a8f6.lovable.app-1783975041181.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/83300d67-5ac2-41ab-814a-f910ebc10e60/id-preview-d7a4b127--bdc4a465-53e6-4787-9c40-5b1fb6f1a8f6.lovable.app-1783975041181.png" },
     ],
     links: [
       {
