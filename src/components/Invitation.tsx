@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Clock, ChevronDown, Check, X } from "lucide-react";
+import { MapPin, Clock, ChevronDown, Check, X, Volume2, VolumeX } from "lucide-react";
 import samvelAsset from "@/assets/samvel.jpg.asset.json";
 
 type Lang = "hy" | "en";
@@ -69,8 +69,9 @@ const t = {
 } as const;
 
 function useCountdown(target: number) {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(target);
   useEffect(() => {
+    setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
@@ -90,6 +91,35 @@ export function Invitation() {
   const [lang, setLang] = useState<Lang>("hy");
   const s = t[lang];
   const cd = useCountdown(TARGET);
+  const [playing, setPlaying] = useState(false);
+  const [iframeSrc, setIframeSrc] = useState<string | null>(null);
+
+  const toggleMusic = () => {
+    if (!playing) {
+      setIframeSrc(
+        "https://www.youtube.com/embed/qQzdAsjWGPg?autoplay=1&controls=0&loop=1&playlist=qQzdAsjWGPg&modestbranding=1&playsinline=1",
+      );
+      setPlaying(true);
+    } else {
+      setIframeSrc(null);
+      setPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    const start = () => {
+      if (!playing) toggleMusic();
+      window.removeEventListener("pointerdown", start);
+      window.removeEventListener("keydown", start);
+    };
+    window.addEventListener("pointerdown", start, { once: true });
+    window.addEventListener("keydown", start, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", start);
+      window.removeEventListener("keydown", start);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const waLink = (msg: string) =>
     `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
@@ -106,6 +136,23 @@ export function Invitation() {
 
   return (
     <main className="min-h-screen bg-background text-foreground font-sans overflow-x-hidden">
+      {iframeSrc && (
+        <iframe
+          src={iframeSrc}
+          allow="autoplay; encrypted-media"
+          title="Background music"
+          className="fixed w-px h-px opacity-0 pointer-events-none -z-10"
+          aria-hidden="true"
+        />
+      )}
+      <button
+        onClick={toggleMusic}
+        aria-label={playing ? "Mute music" : "Play music"}
+        className="fixed top-5 right-5 z-50 rounded-full border border-white/15 bg-black/40 backdrop-blur-md p-3 text-foreground/80 hover:text-gold transition-colors"
+      >
+        {playing ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+      </button>
+
       {/* Language toggle */}
       <div className="fixed top-5 left-5 z-50 flex items-center gap-1 rounded-full border border-white/15 bg-black/40 backdrop-blur-md px-1 py-1 text-xs uppercase tracking-widest">
         {(["hy", "en"] as const).map((code) => (
