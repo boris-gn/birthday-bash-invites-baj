@@ -91,35 +91,21 @@ export function Invitation() {
   const [lang, setLang] = useState<Lang>("hy");
   const s = t[lang];
   const cd = useCountdown(TARGET);
-  const [playing, setPlaying] = useState(false);
-  const [iframeSrc, setIframeSrc] = useState<string | null>(null);
+  const MUSIC_SRC =
+    "https://www.youtube.com/embed/qQzdAsjWGPg?autoplay=1&controls=0&loop=1&playlist=qQzdAsjWGPg&modestbranding=1&playsinline=1&mute=0";
+
+  const [playing, setPlaying] = useState(true);
+  const [iframeSrc, setIframeSrc] = useState<string | null>(MUSIC_SRC);
 
   const toggleMusic = () => {
     if (!playing) {
-      setIframeSrc(
-        "https://www.youtube.com/embed/qQzdAsjWGPg?autoplay=1&controls=0&loop=1&playlist=qQzdAsjWGPg&modestbranding=1&playsinline=1",
-      );
+      setIframeSrc(MUSIC_SRC);
       setPlaying(true);
     } else {
       setIframeSrc(null);
       setPlaying(false);
     }
   };
-
-  useEffect(() => {
-    const start = () => {
-      if (!playing) toggleMusic();
-      window.removeEventListener("pointerdown", start);
-      window.removeEventListener("keydown", start);
-    };
-    window.addEventListener("pointerdown", start, { once: true });
-    window.addEventListener("keydown", start, { once: true });
-    return () => {
-      window.removeEventListener("pointerdown", start);
-      window.removeEventListener("keydown", start);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const waLink = (msg: string) =>
     `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
