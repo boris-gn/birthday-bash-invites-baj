@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Clock, ChevronDown, Check, X, Volume2, VolumeX } from "lucide-react";
-import samvelAsset from "@/assets/samvel.jpg.asset.json";
+import samvelImg from "@/assets/samvel.jpeg";
+import samvelImgPc from "@/assets/image.png";
+import musicSrc from "@/assets/music.mp3";
 
 type Lang = "hy" | "en";
 
@@ -35,7 +37,8 @@ const t = {
     yes: "Այո, կգամ",
     no: "Ցավոք, չեմ կարող",
     yesMsg: "Բարև Սամվել! Շնորհավորում եմ նախապես 🎉 Սիրով կգամ քո 35-ամյակին։",
-    noMsg: "Բարև Սամվել! Շնորհավորում եմ նախապես 🎉 Ցավոք, չեմ կարողանա գալ, բայց մտքով քեզ հետ եմ։",
+    noMsg:
+      "Բարև Սամվել! Շնորհավորում եմ նախապես 🎉 Ցավոք, չեմ կարողանա գալ, բայց մտքով քեզ հետ եմ։",
     footer: "Սպասում ենք Ձեզ",
   },
   en: {
@@ -91,24 +94,44 @@ export function Invitation() {
   const [lang, setLang] = useState<Lang>("hy");
   const s = t[lang];
   const cd = useCountdown(TARGET);
-  const MUSIC_SRC =
-    "https://www.youtube.com/embed/qQzdAsjWGPg?autoplay=1&controls=0&loop=1&playlist=qQzdAsjWGPg&modestbranding=1&playsinline=1&mute=0";
 
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(true);
-  const [iframeSrc, setIframeSrc] = useState<string | null>(MUSIC_SRC);
+
+  // Browsers block autoplay-with-sound until the first user interaction.
+  // Try to play immediately, and fall back to the earliest user gesture.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const tryPlay = () => {
+      audio
+        .play()
+        .then(() => setPlaying(true))
+        .catch(() => setPlaying(false));
+    };
+    tryPlay();
+
+    const events = ["pointerdown", "keydown", "touchstart", "scroll"] as const;
+    events.forEach((e) => window.addEventListener(e, tryPlay, { once: true, passive: true }));
+    return () => events.forEach((e) => window.removeEventListener(e, tryPlay));
+  }, []);
 
   const toggleMusic = () => {
-    if (!playing) {
-      setIframeSrc(MUSIC_SRC);
-      setPlaying(true);
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      audio
+        .play()
+        .then(() => setPlaying(true))
+        .catch(() => setPlaying(false));
     } else {
-      setIframeSrc(null);
+      audio.pause();
       setPlaying(false);
     }
   };
 
-  const waLink = (msg: string) =>
-    `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  const waLink = (msg: string) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
 
   const cells = useMemo(
     () => [
@@ -122,15 +145,8 @@ export function Invitation() {
 
   return (
     <main className="min-h-screen bg-background text-foreground font-sans overflow-x-hidden">
-      {iframeSrc && (
-        <iframe
-          src={iframeSrc}
-          allow="autoplay; encrypted-media"
-          title="Background music"
-          className="fixed w-px h-px opacity-0 pointer-events-none -z-10"
-          aria-hidden="true"
-        />
-      )}
+      <audio ref={audioRef} src={musicSrc} loop preload="auto" aria-hidden="true" />
+
       <button
         onClick={toggleMusic}
         aria-label={playing ? "Mute music" : "Play music"}
@@ -164,11 +180,17 @@ export function Invitation() {
           transition={{ duration: 8, ease: "easeOut" }}
           className="absolute inset-0"
         >
-          <img
-            src={samvelAsset.url}
-            alt="Samvel"
-            className="w-full h-full object-cover grayscale"
-          />
+          <img src={samvelImgPc} alt="Samvel" className="w-full h-full grayscale  object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
+        </motion.div>
+        <motion.div
+          initial={{ scale: 1.15 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 8, ease: "easeOut" }}
+          className="absolute inset-0 md:hidden"
+        >
+          <img src={samvelImg} alt="Samvel" className="w-full h-full object-cover grayscale" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
         </motion.div>
@@ -344,13 +366,7 @@ export function Invitation() {
   );
 }
 
-function Section({
-  id,
-  children,
-}: {
-  id?: string;
-  children: React.ReactNode;
-}) {
+function Section({ id, children }: { id?: string; children: React.ReactNode }) {
   return (
     <section id={id} className="px-6 py-24 sm:py-32">
       <motion.div
@@ -366,7 +382,5 @@ function Section({
 }
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[10px] uppercase tracking-[0.5em] text-gold">{children}</p>
-  );
+  return <p className="text-[10px] uppercase tracking-[0.5em] text-gold">{children}</p>;
 }
