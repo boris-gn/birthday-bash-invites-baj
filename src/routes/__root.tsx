@@ -11,7 +11,13 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import OG_IMAGE from "@/assets/small.jpeg";
+import smallImg from "@/assets/small.jpeg";
+
+// Social scrapers (Facebook, iMessage, etc.) require an ABSOLUTE image URL.
+// The Vite import gives a site-relative path, so we prefix the live origin.
+// Override at build time with VITE_SITE_URL if the domain changes.
+const SITE_URL = import.meta.env.VITE_SITE_URL ?? "https://samvel35.lovable.app";
+const OG_IMAGE = new URL(smallImg, SITE_URL).href;
 
 function NotFoundComponent() {
   return (
@@ -95,9 +101,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:locale:alternate", content: "en_US" },
       { property: "og:image", content: OG_IMAGE },
       { property: "og:image:secure_url", content: OG_IMAGE },
-      { property: "og:image:type", content: "image/png" },
-      { property: "og:image:width", content: "1920" },
-      { property: "og:image:height", content: "1080" },
+      { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:image:width", content: "1365" },
+      { property: "og:image:height", content: "840" },
       { property: "og:image:alt", content: "Սամվելի 35-ամյակը · 29.07.2026" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Սամվելի 35-ամյակը · 29.07.2026" },
