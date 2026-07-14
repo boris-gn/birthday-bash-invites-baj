@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import OG_IMAGE from "@/assets/small.jpeg";
 
 function NotFoundComponent() {
   return (
@@ -80,8 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Սամվելի 35-ամյակը · 29.07.2026" },
       {
         name: "description",
-        content:
-          "Հոբելյարի կողմից\nՀոբելյարի կնոջ կողմից",
+        content: "Հոբելյարի կողմից\nՀոբելյարի կնոջ կողմից",
       },
       { name: "author", content: "Samvel" },
       { property: "og:title", content: "Սամվելի 35-ամյակը · 29.07.2026" },
@@ -90,11 +90,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Հոբելյարի կողմից\nՀոբելյարի կնոջ կողմից",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Սամվելի 35-ամյակը" },
+      { property: "og:locale", content: "hy_AM" },
+      { property: "og:locale:alternate", content: "en_US" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:secure_url", content: OG_IMAGE },
+      { property: "og:image:type", content: "image/png" },
+      { property: "og:image:width", content: "1920" },
+      { property: "og:image:height", content: "1080" },
+      { property: "og:image:alt", content: "Սամվելի 35-ամյակը · 29.07.2026" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Սամվելի 35-ամյակը · 29.07.2026" },
       { name: "twitter:description", content: "Հոբելյարի կողմից\nՀոբելյարի կնոջ կողմից" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/83300d67-5ac2-41ab-814a-f910ebc10e60/id-preview-d7a4b127--bdc4a465-53e6-4787-9c40-5b1fb6f1a8f6.lovable.app-1783975041181.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/83300d67-5ac2-41ab-814a-f910ebc10e60/id-preview-d7a4b127--bdc4a465-53e6-4787-9c40-5b1fb6f1a8f6.lovable.app-1783975041181.png" },
+      { name: "twitter:image", content: OG_IMAGE },
+      { name: "twitter:image:alt", content: "Սամվելի 35-ամյակը · 29.07.2026" },
     ],
     links: [
       {
